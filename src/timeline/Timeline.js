@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Post from "./Post/Post";
 import Suggestions from "./Suggestions";
 import "./Timeline.css";
 
 function Timeline() {
-  const [posts, setPosts] = useState([
+  const data = [
     {
       user: "redian_",
       postImage:
@@ -33,13 +33,13 @@ function Timeline() {
       likes: 14,
       timestamp: "2d",
     },
-  ]);
+  ];
 
   return (
     <div className="timeline">
       <div className="timeline__left">
         <div className="timeline__posts">
-          {posts.map((post, index) => (
+          {data.map((post, index) => (
             <Post
               key={index}
               user={post.user}

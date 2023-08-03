@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firbase";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+// import { auth } from "./firbase";
+import { loginUser, setLoading } from "../features/userSlice";
 
-//  .then(
-//     signInWithEmailAndPassword(auth, values.email, values.password).then(
-//         updateProfile(auth.currentUser, { displayName: values.name })
-//       )
-//     )
-//     .catch((err) => {
-//       alert(err);
-//     });
+///features/userSlice
 
 const initialState = {
   name: "",
@@ -18,6 +15,9 @@ const initialState = {
 };
 const Singup = () => {
   const [values, setValues] = useState(initialState);
+  const user = useSelector((state) => state.data.user.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,6 +44,31 @@ const Singup = () => {
         alert(err.message);
       });
   };
+
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        dispatch(
+          loginUser({
+            uid: authUser.uid,
+            userName: authUser.displayName,
+            email: authUser.email,
+          })
+        );
+        dispatch(setLoading(false));
+      } else {
+        console.log("User is not logged in");
+      }
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  }, [user]);
 
   return (
     <div className="signup">

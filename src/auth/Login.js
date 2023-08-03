@@ -1,6 +1,8 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from "../firbase";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const initialState = {
@@ -8,6 +10,8 @@ const Login = () => {
     password: "",
   };
   const [values, setValues] = useState(initialState);
+  const user = useSelector((state) => state.data.user.user);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,6 +24,14 @@ const Login = () => {
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, values.email, values.password);
   };
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate("homePage");
+      }, 2000);
+    }
+  }, [user]);
 
   return (
     <div className="login">
